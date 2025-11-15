@@ -14,11 +14,23 @@ from sklearn.ensemble._bagging import BaseBagging
 from sklearn.ensemble._base import _partition_estimators
 from sklearn.base import ClassifierMixin, RegressorMixin
 from sklearn.utils.random import sample_without_replacement
-from sklearn.utils import indices_to_mask
+try:
+    from sklearn.utils import indices_to_mask
+except ImportError:
+    # indices_to_mask was removed in scikit-learn 1.2+
+    def indices_to_mask(indices, mask_length):
+        """Convert list of indices to boolean mask."""
+        mask = np.zeros(mask_length, dtype=bool)
+        mask[indices] = True
+        return mask
 from sklearn.metrics import accuracy_score, r2_score
 from sklearn.utils.validation import has_fit_parameter
 from sklearn.utils import check_random_state, check_array, check_consistent_length, check_X_y
-from sklearn.utils._joblib import Parallel, delayed
+try:
+    from sklearn.utils._joblib import Parallel, delayed
+except ImportError:
+    # _joblib moved in scikit-learn 1.3+
+    from joblib import Parallel, delayed
 
 from mlfinlab.sampling.bootstrapping import seq_bootstrap, get_ind_matrix
 
