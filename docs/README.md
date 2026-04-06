@@ -1,5 +1,8 @@
 # MLFinLab
 
+> **Last Updated**: 2026-04-06T16:25:30Z  \
+> **Git Hash**: `f733657`
+
 Machine Learning for Finance library by Hudson & Thames. Implements algorithms and techniques from "Advances in Financial Machine Learning" by Marcos Lopez de Prado, "Machine Learning for Asset Managers", and related research papers.
 
 ## Overview
