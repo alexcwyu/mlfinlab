@@ -34,24 +34,24 @@ Unsuccessful rows are retained as historical compatibility attempts; they are no
 
 | Command | Exit | Seconds | Evidence |
 |---|---:|---:|---|
-| `uv lock --upgrade --python 3.15` | 0 | 1.98 | [log](../../docs/maintenance-2026-10-12/mlfinlab-lock-3.15.log) |
-| `uv sync --all-extras --all-groups --python 3.15 --no-build --no-install-project` | 2 | 0.05 | [log](../../docs/maintenance-2026-10-12/mlfinlab-wheel-probe-3.15.log) |
-| `uv lock --upgrade --python 3.14` | 0 | 0.83 | [log](../../docs/maintenance-2026-10-12/mlfinlab-lock-3.14.log) |
-| `uv sync --all-extras --all-groups --python 3.14 --no-build --no-install-project` | 2 | 0.04 | [log](../../docs/maintenance-2026-10-12/mlfinlab-wheel-probe-3.14.log) |
-| `uv sync --all-extras --all-groups --python 3.14` | 2 | 0.05 | [log](../../docs/maintenance-2026-10-12/mlfinlab-sync-3.14.log) |
-| `uv lock --upgrade --python 3.13` | 0 | 0.41 | [log](../../docs/maintenance-2026-10-12/mlfinlab-lock-3.13.log) |
-| `uv sync --all-extras --all-groups --python 3.13 --no-build --no-install-project` | 2 | 0.05 | [log](../../docs/maintenance-2026-10-12/mlfinlab-wheel-probe-3.13.log) |
-| `uv sync --all-extras --all-groups --python 3.13` | 0 | 2.24 | [log](../../docs/maintenance-2026-10-12/mlfinlab-sync-3.13.log) |
-| `uv build --python 3.13` | 0 | 1.01 | [log](../../docs/maintenance-2026-10-12/mlfinlab-build.log) |
-| `/Users/alex/.local/share/uv/python/cpython-3.13-macos-aarch64-none/bin/python3.13 -m compileall -q src` | 0 | 0.14 | [log](../../docs/maintenance-2026-10-12/mlfinlab-compile.log) |
-| `uv run --no-sync python -m pytest` | 1 | 2.33 | [log](../../docs/maintenance-2026-10-12/mlfinlab-tests.log) |
-| `uv run --no-sync python -m pytest src/mlfinlab` | 5 | 1.61 | [log](../../docs/maintenance-2026-10-12/mlfinlab-tests-existing-source.log) |
-| `uv run --no-sync python -m compileall -q src` | 0 | 0.13 | [log](../../docs/maintenance-2026-10-12/mlfinlab-compile-final.log) |
-| `uv build --python 3.13` | 0 | 1.05 | [log](../../docs/maintenance-2026-10-12/mlfinlab-build-final.log) |
-| `uv run --no-sync python -c import sys,importlib.metadata,json; print(sys.version); print(json.dumps({d.metadata["Name"]: d.version for d in importlib.metadata.distributions()},indent=2,sort_keys=True))` | 0 | 0.24 | [log](../../docs/maintenance-2026-10-12/mlfinlab-versions-final.log) |
-| `uv sync --directory /tmp/trading-python315-probes/mlfinlab --all-extras --all-groups --python 3.15` | 2 | 0.66 | [log](../../docs/maintenance-2026-10-12/mlfinlab-python315-source-probe.log) |
+| `uv lock --upgrade --python 3.15` | 0 | 1.98 | [check record](maintenance/index.html) |
+| `uv sync --all-extras --all-groups --python 3.15 --no-build --no-install-project` | 2 | 0.05 | [check record](maintenance/index.html) |
+| `uv lock --upgrade --python 3.14` | 0 | 0.83 | [check record](maintenance/index.html) |
+| `uv sync --all-extras --all-groups --python 3.14 --no-build --no-install-project` | 2 | 0.04 | [check record](maintenance/index.html) |
+| `uv sync --all-extras --all-groups --python 3.14` | 2 | 0.05 | [check record](maintenance/index.html) |
+| `uv lock --upgrade --python 3.13` | 0 | 0.41 | [check record](maintenance/index.html) |
+| `uv sync --all-extras --all-groups --python 3.13 --no-build --no-install-project` | 2 | 0.05 | [check record](maintenance/index.html) |
+| `uv sync --all-extras --all-groups --python 3.13` | 0 | 2.24 | [check record](maintenance/index.html) |
+| `uv build --python 3.13` | 0 | 1.01 | [check record](maintenance/index.html) |
+| `/Users/alex/.local/share/uv/python/cpython-3.13-macos-aarch64-none/bin/python3.13 -m compileall -q src` | 0 | 0.14 | [check record](maintenance/index.html) |
+| `uv run --no-sync python -m pytest` | 1 | 2.33 | [check record](maintenance/index.html) |
+| `uv run --no-sync python -m pytest src/mlfinlab` | 5 | 1.61 | [check record](maintenance/index.html) |
+| `uv run --no-sync python -m compileall -q src` | 0 | 0.13 | [check record](maintenance/index.html) |
+| `uv build --python 3.13` | 0 | 1.05 | [check record](maintenance/index.html) |
+| `uv run --no-sync python -c import sys,importlib.metadata,json; print(sys.version); print(json.dumps({d.metadata["Name"]: d.version for d in importlib.metadata.distributions()},indent=2,sort_keys=True))` | 0 | 0.24 | [check record](maintenance/index.html) |
+| `uv sync --directory /tmp/trading-python315-probes/mlfinlab --all-extras --all-groups --python 3.15` | 2 | 0.66 | [check record](maintenance/index.html) |
 
-The versions-final log records the exact interpreter patch release and every installed dependency version. The machine-readable [result](../../docs/maintenance-2026-10-12/mlfinlab-result.json) includes branch/default ancestry, status, artifacts and unresolved checks.
+The versions-final log records the exact interpreter patch release and every installed dependency version. The machine-readable [verification record](maintenance/verification.json) includes branch/default ancestry, status, artifacts and unresolved checks.
 
 ## Dependency floor refresh
 

@@ -1,0 +1,303 @@
+{
+  "repository": "mlfinlab",
+  "source_commit_before_documentation_commit": "73fb26cda795f93edff21f146fad2a4adb6f9352",
+  "recorded_on": "2026-10-12",
+  "records": [
+    {
+      "command": "uv build --python 3.13",
+      "exit_code": 0,
+      "seconds": 1.01,
+      "check": "build",
+      "original_log": "mlfinlab-build.log",
+      "log_sha256": "23b856858eccf800d39af1c7e29f72be755f705284dfd5a1aea63a44127a8d0c",
+      "outcomes": [
+        "Successfully built dist/mlfinlab-1.3.0.tar.gz",
+        "Successfully built dist/mlfinlab-1.3.0-py3-none-any.whl"
+      ]
+    },
+    {
+      "command": "uv build --python 3.13",
+      "exit_code": 0,
+      "seconds": 1.05,
+      "check": "build-final",
+      "original_log": "mlfinlab-build-final.log",
+      "log_sha256": "23b856858eccf800d39af1c7e29f72be755f705284dfd5a1aea63a44127a8d0c",
+      "outcomes": [
+        "Successfully built dist/mlfinlab-1.3.0.tar.gz",
+        "Successfully built dist/mlfinlab-1.3.0-py3-none-any.whl"
+      ]
+    },
+    {
+      "command": "/Users/alex/.local/share/uv/python/cpython-3.13-macos-aarch64-none/bin/python3.13 -m compileall -q src",
+      "exit_code": 0,
+      "seconds": 0.14,
+      "check": "compile",
+      "original_log": "mlfinlab-compile.log",
+      "log_sha256": "ef7f96ab28b3fdbee219d38617cf3fe3dc8de37cf27c3b142099f1cba4e4d7a7",
+      "outcomes": []
+    },
+    {
+      "command": "uv run --no-sync python -m compileall -q src",
+      "exit_code": 0,
+      "seconds": 0.13,
+      "check": "compile-final",
+      "original_log": "mlfinlab-compile-final.log",
+      "log_sha256": "18836bd061fd2cbbcee4cfbe11a0c5bb8956a47a78decc98b17bdc695bd896a7",
+      "outcomes": []
+    },
+    {
+      "command": "uv lock --upgrade --python 3.13",
+      "exit_code": 0,
+      "seconds": 0.41,
+      "check": "lock-3.13",
+      "original_log": "mlfinlab-lock-3.13.log",
+      "log_sha256": "cc727251a1aa5c3756d3938669f044fc553747784bbfe8ceb59711a7192a1125",
+      "outcomes": []
+    },
+    {
+      "command": "uv lock --upgrade --python 3.14",
+      "exit_code": 0,
+      "seconds": 0.83,
+      "check": "lock-3.14",
+      "original_log": "mlfinlab-lock-3.14.log",
+      "log_sha256": "74ccdedbc4be6b8de6b57900565e36aaf9542c4293c6897c6becd50b9ff212e4",
+      "outcomes": []
+    },
+    {
+      "command": "uv lock --upgrade --python 3.15",
+      "exit_code": 0,
+      "seconds": 1.98,
+      "check": "lock-3.15",
+      "original_log": "mlfinlab-lock-3.15.log",
+      "log_sha256": "cc6510f5f77efb6fe1f5a13b2b4d5e764f0986ec072adfa0829d6ce03583b627",
+      "outcomes": []
+    },
+    {
+      "command": "uv sync --directory /tmp/trading-python315-probes/mlfinlab --all-extras --all-groups --python 3.15",
+      "exit_code": 2,
+      "seconds": 0.66,
+      "check": "python315-source-probe",
+      "original_log": "mlfinlab-python315-source-probe.log",
+      "log_sha256": "67f7e2629b7a60de50bbadb94ca4517c448ec2e6b95082a199120ff545aa8d99",
+      "outcomes": []
+    },
+    {
+      "command": "uv sync --all-extras --all-groups --python 3.13",
+      "exit_code": 0,
+      "seconds": 2.24,
+      "check": "sync-3.13",
+      "original_log": "mlfinlab-sync-3.13.log",
+      "log_sha256": "7d837ae76a5d41e0e9164db9ca2098eec5b8522dc64f8347b9f37a5d76bce3f6",
+      "outcomes": []
+    },
+    {
+      "command": "uv sync --all-extras --all-groups --python 3.14",
+      "exit_code": 2,
+      "seconds": 0.05,
+      "check": "sync-3.14",
+      "original_log": "mlfinlab-sync-3.14.log",
+      "log_sha256": "42a027a54ae16409b0599874d7da22c5b0da5771601886cacefae76466670eb8",
+      "outcomes": []
+    },
+    {
+      "command": "uv run --no-sync python -m pytest",
+      "exit_code": 1,
+      "seconds": 2.33,
+      "check": "tests",
+      "original_log": "mlfinlab-tests.log",
+      "log_sha256": "2328279beddcd9e82cd2de4fc60f3298e3c41ff8a77874daf29fc8a988d13734",
+      "outcomes": []
+    },
+    {
+      "command": "uv run --no-sync python -m pytest src/mlfinlab",
+      "exit_code": 5,
+      "seconds": 1.61,
+      "check": "tests-existing-source",
+      "original_log": "mlfinlab-tests-existing-source.log",
+      "log_sha256": "df381f030feb66fb3c6e8da751bc257f58dc8c29772d7cf0f2455e5b2625e4e8",
+      "outcomes": []
+    },
+    {
+      "command": "uv run --no-sync python -c import sys,importlib.metadata,json; print(sys.version); print(json.dumps({d.metadata[\"Name\"]: d.version for d in importlib.metadata.distributions()},indent=2,sort_keys=True))",
+      "exit_code": 0,
+      "seconds": 0.24,
+      "check": "versions-final",
+      "original_log": "mlfinlab-versions-final.log",
+      "log_sha256": "04c4e465bee9c85b530b6ecdfb45d85b4a9b678ed5a5b81a7a70277f44514e3a",
+      "outcomes": []
+    },
+    {
+      "command": "uv sync --all-extras --all-groups --python 3.13 --no-build --no-install-project",
+      "exit_code": 2,
+      "seconds": 0.05,
+      "check": "wheel-probe-3.13",
+      "original_log": "mlfinlab-wheel-probe-3.13.log",
+      "log_sha256": "eb9536d219cc79d88609d1b1aebe282eb745d8accc99a354d24e1f2767e8a732",
+      "outcomes": []
+    },
+    {
+      "command": "uv sync --all-extras --all-groups --python 3.14 --no-build --no-install-project",
+      "exit_code": 2,
+      "seconds": 0.04,
+      "check": "wheel-probe-3.14",
+      "original_log": "mlfinlab-wheel-probe-3.14.log",
+      "log_sha256": "738cab9c43a1eea43f74114028b089f4eee9164a11dccfebc4b9eca07726413b",
+      "outcomes": []
+    },
+    {
+      "command": "uv sync --all-extras --all-groups --python 3.15 --no-build --no-install-project",
+      "exit_code": 2,
+      "seconds": 0.05,
+      "check": "wheel-probe-3.15",
+      "original_log": "mlfinlab-wheel-probe-3.15.log",
+      "log_sha256": "ff72baa55aa0b98b4edef051cdbf14cef966256df9e2b697c6ca9c47abae0dca",
+      "outcomes": []
+    }
+  ],
+  "summary": {
+    "repo": "mlfinlab",
+    "branch": "feature/ayu_develop",
+    "blockers": [
+      {
+        "stage": "tests",
+        "reason": "No supplied test cases in this checkout; no cases were added."
+      }
+    ],
+    "started": "2026-10-12T00:15:28+0800",
+    "dependency_updates": [
+      {
+        "from": "hatchling",
+        "to": "hatchling>=1.32.4"
+      },
+      {
+        "from": "cython>=3.2.1",
+        "to": "cython>=3.3.0"
+      },
+      {
+        "from": "numpy>=2.3.4",
+        "to": "numpy>=2.5.4"
+      },
+      {
+        "from": "matplotlib>=3.10.7",
+        "to": "matplotlib>=3.11.2"
+      },
+      {
+        "from": "pandas>=2.3.3",
+        "to": "pandas>=3.0.6"
+      },
+      {
+        "from": "scikit-learn>=1.7.2",
+        "to": "scikit-learn>=1.9.1"
+      },
+      {
+        "from": "scipy>=1.16.3",
+        "to": "scipy>=1.18.1"
+      },
+      {
+        "from": "statsmodels>=0.14.5",
+        "to": "statsmodels>=0.15.0"
+      },
+      {
+        "from": "POT>=0.9.6",
+        "to": "POT>=0.9.7.post1"
+      },
+      {
+        "from": "numba>=0.62.1",
+        "to": "numba>=0.68.0"
+      },
+      {
+        "from": "networkx>=3.5",
+        "to": "networkx>=3.7"
+      },
+      {
+        "from": "dash>=3.3.0",
+        "to": "dash>=4.4.1"
+      },
+      {
+        "from": "tensorflow>=2.20.0",
+        "to": "tensorflow>=2.21.0"
+      },
+      {
+        "from": "joblib>=1.5.2",
+        "to": "joblib>=1.6.0"
+      },
+      {
+        "from": "decorator>=5.1.1",
+        "to": "decorator>=5.3.1"
+      },
+      {
+        "from": "pytest>=9.0",
+        "to": "pytest>=9.1.1"
+      },
+      {
+        "from": "pytest-cov>=6.0.0",
+        "to": "pytest-cov>=7.1.0"
+      },
+      {
+        "from": "coverage>=7.6.10",
+        "to": "coverage>=7.16.2"
+      },
+      {
+        "from": "pylint>=3.3.5",
+        "to": "pylint>=4.1.3"
+      },
+      {
+        "from": "sphinx>=8.1.3",
+        "to": "sphinx>=9.1.0"
+      },
+      {
+        "from": "sphinx-rtd-theme>=3.0.2",
+        "to": "sphinx-rtd-theme>=3.1.0"
+      }
+    ],
+    "lock": "passed",
+    "python": "3.13",
+    "sync": "passed",
+    "build": "passed",
+    "compile": "passed",
+    "tests": "absent",
+    "test_summary": "$ uv run --no-sync python -m pytest src/mlfinlab\n\nno tests ran in 0.02s\n",
+    "finished": "2026-10-12T00:15:41+0800",
+    "head": "73fb26cda795f93edff21f146fad2a4adb6f9352",
+    "notes": [
+      "This public checkout contains API scaffolding with many pass bodies and no supplied tests. pytest exit5 confirms absence; package compilation and build do not certify research algorithms.",
+      "TensorFlow 2.21.0 publishes neither a compatible macOS ARM64 Python3.14/3.15 wheel nor a source distribution. Managed Python3.13.16 is the latest runnable fallback."
+    ],
+    "python_version": "3.13.16 (main, Oct  9 2026, 15:11:24) [Clang 22.1.3 ]",
+    "failed_attempts": [
+      {
+        "python": "3.15",
+        "stage": "native wheel probe",
+        "details": "$ uv sync --all-extras --all-groups --python 3.15 --no-build --no-install-project\nUsing CPython 3.15.0\nCreating virtual environment at: .venv\nResolved 135 packages in 10ms\nerror: Distribution `dash-cytoscape==1.0.2 @ registry+https://pypi.org/simple` can't be installed because it is marked as `--no-build` but has no binary distribution\n"
+      },
+      {
+        "python": "3.14",
+        "stage": "sync",
+        "details": "$ uv sync --all-extras --all-groups --python 3.14\nResolved 135 packages in 12ms\nerror: Distribution `tensorflow==2.21.0 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform\n\nhint: You're using CPython 3.14 (`cp314`), but `tensorflow` (v2.21.0) only has wheels with the following Python ABI tag: `cp313`\n"
+      },
+      {
+        "stage": "tests",
+        "details": "$ uv run --no-sync python -m pytest\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 203, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"<workspace>/mlfinlab/.venv/lib/python3.13/site-packages/pytest/__main__.py\", line 9, in <module>\n    raise SystemExit(_console_main())\n                     ~~~~~~~~~~~~~^^\n  File \"<workspace>/mlfinlab/.venv/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 253, in _console_main\n    code = _main(prog=_get_prog_name(sys.argv))\n  File \"<workspace>/mlfinlab/.venv/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 223, in _main\n    config = _prepareconfig(new_args, plugins, prog=prog)\n  File \"<workspace>/mlfinlab/.venv/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 410, in _prepareconfig\n    config: Config = pluginmanager.hook.pytest_cmdline_parse(\n                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^\n        pluginmanager=pluginmanager, args=args\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"<workspace>/mlfinlab/.venv/lib/python3.13/site-packages/pluggy/_hooks.py\", line 512, in __call__\n    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)\n           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<workspace>/mlfinlab/.venv/lib/python3.13/site-packages/pluggy/_manager.py\", line 120, in _hookexec\n    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)\n           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<workspace>/mlfinlab/.venv/lib/python3.13/site-packages/pluggy/_callers.py\", line 167, in _multicall\n    raise exception\n  File \"<workspace>/mlfinlab/.venv/lib/python3.13/site-packages/pluggy/_callers.py\", line 139, in _multicall\n    teardown.throw(exception)\n    ~~~~~~~~~~~~~~^^^^^^^^^^^\n  File \"<workspace>/mlfinlab/.venv/lib/python3.13/site-packages/_pytest/helpconfig.py\", line 124, in pytest_cmdline_parse\n    config = yield\n             ^^^^^\n  File \"<workspace>/mlfinlab/.venv/lib/python3.13/site-packages/pluggy/_callers.py\", line 121, in _multicall\n    res = hook_impl.function(*args)\n  File \"<workspace>/mlfinlab/.venv/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 1232, in pytest_cmdline_parse\n    self.parse(args)\n    ~~~~~~~~~~^^^^^^\n  File \"<workspace>/mlfinlab/.venv/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 1624, in parse\n    self.args, self.args_source = self._decide_args(\n                                  ~~~~~~~~~~~~~~~~~^\n        args=getattr(self.option, FILE_OR_DIR),\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<4 lines>...\n        warn=True,\n        ^^^^^^^^^^\n    )\n    ^\n  File \"<workspace>/mlfinlab/.venv/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 1430, in _decide_args\n    self.issue_config_time_warning(\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^\n        PytestConfigWarning(warning_text), stacklevel=3\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"<workspace>/mlfinlab/.venv/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 1654, in issue_config_time_warning\n    warnings.warn(warning, stacklevel=stacklevel)\n    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\npytest.PytestConfigWarning: No files were found in testpaths; consider removing or adjusting your testpaths configuration. Searching recursively from the current directory instead.\n"
+      }
+    ],
+    "unresolved_blockers": [
+      {
+        "stage": "tests",
+        "reason": "No supplied test cases in this checkout; no cases were added."
+      }
+    ],
+    "default_ancestry": {
+      "refs/remotes/origin/master": true
+    },
+    "merge_in_progress": false,
+    "artifact_files": [
+      "dist/mlfinlab-1.3.0-py3-none-any.whl",
+      "dist/.gitignore",
+      "dist/mlfinlab-1.3.0.tar.gz"
+    ],
+    "committed": true,
+    "pushed": false,
+    "worktree_status": ""
+  },
+  "note": "Full raw logs are retained in the workspace maintenance evidence, not distributed here. Hashes identify those original logs. A successful build or selected test subset does not imply a full test-suite pass. Commands containing <workspace> describe the original execution environment."
+}
