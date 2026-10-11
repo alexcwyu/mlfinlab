@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Current uv development workflow</title><style>
+:root{color-scheme:light dark;--bg:#f6f8fa;--paper:#fff;--fg:#182332;--muted:#526274;--line:#d9e0e7;--accent:#1769aa}
+@media(prefers-color-scheme:dark){:root{--bg:#111820;--paper:#192330;--fg:#e6edf3;--muted:#a0b3c5;--line:#344354;--accent:#71b7ee}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.7 system-ui,-apple-system,sans-serif}
+header{border-bottom:1px solid var(--line);padding:16px max(24px,calc((100vw - 1120px)/2));background:var(--paper);font-size:14px}
+main{max-width:1120px;margin:32px auto;padding:40px 48px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+h1,h2,h3,h4{line-height:1.3;scroll-margin-top:24px}h1{font-size:2.1rem}h2{margin-top:2.5em;border-bottom:1px solid var(--line);padding-bottom:.35em}h3{margin-top:1.8em}
+a{color:var(--accent);text-underline-offset:3px}code{font:14px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--bg);border-radius:4px;padding:2px 5px}pre{overflow:auto;border:1px solid var(--line);background:var(--bg);padding:16px;border-radius:7px}pre code{padding:0;background:none}
+table{border-collapse:collapse;width:100%;display:block;overflow-x:auto;font-size:14px}th,td{border:1px solid var(--line);padding:9px 12px;text-align:left}th{background:var(--bg)}blockquote{border-left:4px solid var(--accent);margin:16px 0;padding:4px 20px;color:var(--muted)}
+.diagram{overflow-x:auto;margin:24px 0;padding:20px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#182332}.mermaid{border:0;background:none;text-align:center}.mermaid svg{height:auto;max-width:100%}details{font-size:13px;color:#526274}.headerlink{margin-left:.4em;font-size:.7em;text-decoration:none;color:var(--muted)}
+@media(max-width:740px){main{margin:0;padding:24px 18px;border:0;border-radius:0}h1{font-size:1.7rem}.diagram{padding:8px}}
+@media print{header,details,.headerlink{display:none}body,main{background:#fff;color:#000;border:0;margin:0;padding:0}a{color:#000}.diagram,pre{break-inside:avoid}}
+</style></head><body><header>Engineering documentation · <a href="development.md">Markdown source</a></header><main><!-- ayu-maintenance-2026-10-12 -->
+<h1 id="current-uv-development-workflow">Current uv development workflow<a class="headerlink" href="#current-uv-development-workflow" title="Permanent link">&para;</a></h1>
+<p>The maintained branch is <code>feature/ayu_develop</code>. The selected interpreter is Python <code>3.13</code>; <code>requires-python</code> records the range that was actually resolved. Python 3.15 was attempted first. Dependency/native-wheel failures and fallback evidence are recorded in <a href="validation.md">validation.md</a>.</p>
+<pre><code class="language-sh">export UV_PYTHON_PREFERENCE=only-managed
+uv python install 3.13
+uv lock --check
+uv sync --frozen --all-extras --all-groups
+uv run --no-sync python -m compileall -q src
+uv build
+uv run --no-sync python -m pytest
+</code></pre>
+<p>Use <code>uv lock --upgrade</code> when intentionally refreshing dependencies, then review <code>pyproject.toml</code>, <code>uv.lock</code>, and the existing full test suite. The dependency floors were refreshed from current PyPI release metadata while preserving meaningful upstream upper bounds. Compatibility exceptions are documented with their resolver/test evidence rather than hidden by disabling tests.</p>
+<p>The <code>src/</code> layout and build-backend package discovery preserve public import names. Wheel/sdist resources include the source-associated data and templates. Optional vendor SDKs, live credentials, databases and graphical/native libraries retain their original runtime requirements. Examples and test fixtures are not promoted into the library API.</p>
+<!-- prior-development-notes -->
+
+<h2 id="compatibility-decisions">Compatibility decisions<a class="headerlink" href="#compatibility-decisions" title="Permanent link">&para;</a></h2>
+<ul>
+<li>This public checkout contains API scaffolding with many pass bodies and no supplied tests. pytest exit5 confirms absence; package compilation and build do not certify research algorithms.</li>
+<li>TensorFlow 2.21.0 publishes neither a compatible macOS ARM64 Python3.14/3.15 wheel nor a source distribution. Managed Python3.13.16 is the latest runnable fallback.</li>
+</ul>
+<h1 id="mlfinlab-development-guide">MLFinLab Development Guide<a class="headerlink" href="#mlfinlab-development-guide" title="Permanent link">&para;</a></h1>
+<h2 id="project-setup">Project Setup<a class="headerlink" href="#project-setup" title="Permanent link">&para;</a></h2>
+<pre><code class="language-bash">cd mlfinlab
+pip install -e .
+# or
+pip install -e &quot;.[dev]&quot;
+</code></pre>
+<h2 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">&para;</a></h2>
+<p><strong>Core</strong>:
+- numpy, pandas, scipy
+- scikit-learn (cross-validation, clustering, metrics)
+- statsmodels (ADF tests, statistical models)
+- matplotlib (plotting)
+- networkx (graph algorithms)
+- numba (JIT compilation for EWMA)</p>
+<p><strong>Optional</strong>:
+- dash, plotly (interactive network visualizations)
+- cvxopt (optimization)</p>
+<h2 id="project-structure">Project Structure<a class="headerlink" href="#project-structure" title="Permanent link">&para;</a></h2>
+<pre><code>mlfinlab/
+    src/mlfinlab/           # Main package source
+        __init__.py         # Top-level imports for all modules
+        backtest_statistics/
+        bet_sizing/
+        clustering/
+        codependence/
+        cross_validation/
+        data_generation/
+        data_structures/
+        datasets/
+        ensemble/
+        feature_importance/
+        features/
+        filters/
+        labeling/
+        microstructural_features/
+        multi_product/
+        networks/
+        regression/
+        sample_weights/
+        sampling/
+        structural_breaks/
+        util/
+</code></pre>
+<h2 id="code-conventions">Code Conventions<a class="headerlink" href="#code-conventions" title="Permanent link">&para;</a></h2>
+<h3 id="naming">Naming<a class="headerlink" href="#naming" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Module-level functions use <code>snake_case</code> (e.g., <code>get_sadf</code>, <code>get_mutual_info</code>)</li>
+<li>Classes use <code>PascalCase</code> (e.g., <code>BaseBars</code>, <code>CombinatorialPurgedKFold</code>)</li>
+<li>Private/helper functions prefixed with <code>_</code> (e.g., <code>_get_sadf_at_t</code>)</li>
+<li>Constants are UPPER_CASE</li>
+</ul>
+<h3 id="docstrings">Docstrings<a class="headerlink" href="#docstrings" title="Permanent link">&para;</a></h3>
+<p>All public functions follow the reStructuredText docstring format with AFML references:</p>
+<pre><code class="language-python">def function_name(param1, param2):
+    &quot;&quot;&quot;
+    Advances in Financial Machine Learning, Snippet X.Y, page Z.
+
+    Brief description of what the function does.
+
+    :param param1: (type) Description of param1
+    :param param2: (type) Description of param2
+    :return: (type) Description of return value
+    &quot;&quot;&quot;
+</code></pre>
+<h3 id="type-hints">Type Hints<a class="headerlink" href="#type-hints" title="Permanent link">&para;</a></h3>
+<p>Functions use type hints from <code>typing</code> module:</p>
+<pre><code class="language-python">from typing import Tuple, Union, Optional
+def func(series: pd.Series, model: str, lags: Union[int, list]) -&gt; pd.Series:
+</code></pre>
+<h2 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h2>
+<pre><code class="language-bash"># Run all tests
+pytest
+
+# Run specific module tests
+pytest tests/test_labeling.py
+pytest tests/test_data_structures.py
+
+# With coverage
+pytest --cov=mlfinlab
+</code></pre>
+<h3 id="test-data">Test Data<a class="headerlink" href="#test-data" title="Permanent link">&para;</a></h3>
+<p>The <code>datasets</code> module provides built-in sample data:</p>
+<pre><code class="language-python">from mlfinlab.datasets import load_datasets
+tick_data = load_datasets.load_tick_sample()
+</code></pre>
+<h2 id="adding-a-new-module">Adding a New Module<a class="headerlink" href="#adding-a-new-module" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Create a new directory under <code>src/mlfinlab/</code> with <code>__init__.py</code></li>
+<li>Implement functions following the existing patterns:
+   - Accept pandas Series/DataFrame inputs
+   - Return pandas Series/DataFrame outputs
+   - Include AFML book references in docstrings
+   - Support multiprocessing via <code>mp_pandas_obj</code> where applicable</li>
+<li>Add the module import to <code>src/mlfinlab/__init__.py</code></li>
+<li>Add tests under <code>tests/</code></li>
+</ol>
+<h2 id="key-implementation-patterns">Key Implementation Patterns<a class="headerlink" href="#key-implementation-patterns" title="Permanent link">&para;</a></h2>
+<h3 id="multiprocessing-helper">Multiprocessing Helper<a class="headerlink" href="#multiprocessing-helper" title="Permanent link">&para;</a></h3>
+<p>Use <code>mp_pandas_obj</code> for parallelizable computations:</p>
+<pre><code class="language-python">from mlfinlab.util.multiprocess import mp_pandas_obj
+
+result = mp_pandas_obj(
+    func=_inner_function,
+    pd_obj=('molecule', events.index),
+    num_threads=num_threads,
+    # additional kwargs passed to _inner_function
+    close=close,
+    events=events
+)
+</code></pre>
+<h3 id="batch-processing-for-large-data">Batch Processing for Large Data<a class="headerlink" href="#batch-processing-for-large-data" title="Permanent link">&para;</a></h3>
+<p>Follow the <code>BaseBars</code> pattern for streaming large datasets:</p>
+<pre><code class="language-python">def batch_run(self, file_path_or_df, batch_size=2e7):
+    for batch in self._batch_iterator(file_path_or_df):
+        bars = self._extract_bars(batch)
+        # accumulate bars
+</code></pre>
+<h3 id="ewma-utility">EWMA Utility<a class="headerlink" href="#ewma-utility" title="Permanent link">&para;</a></h3>
+<p>For adaptive threshold computation:</p>
+<pre><code class="language-python">from mlfinlab.util.fast_ewma import ewma
+smoothed = ewma(array, window=100)
+</code></pre>
+<h2 id="performance-considerations">Performance Considerations<a class="headerlink" href="#performance-considerations" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Memory</strong>: Bar generation processes data in chunks; set <code>batch_size</code> appropriately for your memory constraints</li>
+<li><strong>CPU</strong>: Use <code>num_threads</code> parameter on parallelized functions; defaults vary by function</li>
+<li><strong>Numba</strong>: The <code>fast_ewma</code> module uses Numba JIT compilation for significant speedup</li>
+<li><strong>Large datasets</strong>: Use the <code>to_csv=True</code> flag in <code>batch_run()</code> to stream results to disk</li>
+</ul>
+<h2 id="common-development-tasks">Common Development Tasks<a class="headerlink" href="#common-development-tasks" title="Permanent link">&para;</a></h2>
+<h3 id="implementing-a-new-bar-type">Implementing a New Bar Type<a class="headerlink" href="#implementing-a-new-bar-type" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Subclass <code>BaseBars</code> (or <code>BaseImbalanceBars</code> / <code>BaseRunBars</code>)</li>
+<li>Implement <code>_extract_bars(data)</code> -- the core bar formation logic</li>
+<li>Implement <code>_reset_cache()</code> -- what state to reset when a new bar forms</li>
+<li>Create a module-level factory function (e.g., <code>get_my_bars()</code>)</li>
+<li>Export from <code>src/mlfinlab/data_structures/__init__.py</code></li>
+</ol>
+<h3 id="implementing-a-new-labeling-method">Implementing a New Labeling Method<a class="headerlink" href="#implementing-a-new-labeling-method" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Add a new file under <code>labeling/</code></li>
+<li>Implement a function that accepts price data and returns labeled DataFrame</li>
+<li>Export from <code>src/mlfinlab/labeling/__init__.py</code></li>
+<li>Follow the convention: return DataFrame with columns appropriate to the method</li>
+</ol>
+<h3 id="implementing-a-new-codependence-measure">Implementing a New Codependence Measure<a class="headerlink" href="#implementing-a-new-codependence-measure" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Add function to <code>codependence/</code> module</li>
+<li>Accept <code>x: np.array, y: np.array</code> inputs</li>
+<li>Return a float score</li>
+<li>Support optional <code>normalize</code> parameter for [0,1] scaling</li>
+<li>Export from <code>src/mlfinlab/codependence/__init__.py</code></li>
+</ol>
+<h2 id="configuration-reference">Configuration Reference<a class="headerlink" href="#configuration-reference" title="Permanent link">&para;</a></h2>
+<p>MLFinLab functions are configured via function parameters rather than global configuration files. Below are the key parameters for the most commonly used modules.</p>
+<h3 id="dollar-volume-tick-bars-data_structures">Dollar / Volume / Tick Bars (<code>data_structures</code>)<a class="headerlink" href="#dollar-volume-tick-bars-data_structures" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>file_path_or_df</code></td>
+<td>str, list, or DataFrame</td>
+<td><em>(required)</em></td>
+<td>Path to CSV or DataFrame with columns <code>[date_time, price, volume]</code></td>
+</tr>
+<tr>
+<td><code>threshold</code></td>
+<td>float or Series</td>
+<td><code>70000000</code></td>
+<td>Cumulative value threshold to trigger a bar sample</td>
+</tr>
+<tr>
+<td><code>batch_size</code></td>
+<td>int</td>
+<td><code>20000000</code></td>
+<td>Number of rows per batch (lower = less RAM)</td>
+</tr>
+<tr>
+<td><code>verbose</code></td>
+<td>bool</td>
+<td><code>True</code></td>
+<td>Print batch progress to console</td>
+</tr>
+<tr>
+<td><code>to_csv</code></td>
+<td>bool</td>
+<td><code>False</code></td>
+<td>Stream results to CSV after each batch</td>
+</tr>
+<tr>
+<td><code>output_path</code></td>
+<td>str</td>
+<td><code>None</code></td>
+<td>CSV output path when <code>to_csv=True</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="triple-barrier-labeling-labelingget_events">Triple Barrier Labeling (<code>labeling.get_events</code>)<a class="headerlink" href="#triple-barrier-labeling-labelingget_events" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>close</code></td>
+<td>Series</td>
+<td><em>(required)</em></td>
+<td>Close price series</td>
+</tr>
+<tr>
+<td><code>t_events</code></td>
+<td>Series</td>
+<td><em>(required)</em></td>
+<td>Timestamps from CUSUM filter or other event detector</td>
+</tr>
+<tr>
+<td><code>pt_sl</code></td>
+<td>list[float]</td>
+<td><em>(required)</em></td>
+<td><code>[profit_taking, stop_loss]</code> width multipliers (0 disables barrier)</td>
+</tr>
+<tr>
+<td><code>target</code></td>
+<td>Series</td>
+<td><em>(required)</em></td>
+<td>Daily volatility series (used to scale barriers)</td>
+</tr>
+<tr>
+<td><code>min_ret</code></td>
+<td>float</td>
+<td><em>(required)</em></td>
+<td>Minimum return threshold for a label to be non-zero</td>
+</tr>
+<tr>
+<td><code>num_threads</code></td>
+<td>int</td>
+<td><em>(required)</em></td>
+<td>Number of parallel threads for computation</td>
+</tr>
+<tr>
+<td><code>vertical_barrier_times</code></td>
+<td>Series or False</td>
+<td><code>False</code></td>
+<td>Timestamps of vertical barriers from <code>add_vertical_barrier()</code></td>
+</tr>
+<tr>
+<td><code>side_prediction</code></td>
+<td>Series</td>
+<td><code>None</code></td>
+<td>Side predictions for meta-labeling (1 = long, -1 = short)</td>
+</tr>
+<tr>
+<td><code>verbose</code></td>
+<td>bool</td>
+<td><code>True</code></td>
+<td>Print progress</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cusum-filter-filterscusum_filter">CUSUM Filter (<code>filters.cusum_filter</code>)<a class="headerlink" href="#cusum-filter-filterscusum_filter" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>raw_time_series</code></td>
+<td>Series</td>
+<td><em>(required)</em></td>
+<td>Input time series (typically close prices)</td>
+</tr>
+<tr>
+<td><code>threshold</code></td>
+<td>float</td>
+<td><em>(required)</em></td>
+<td>Cumulative deviation threshold to trigger a sample</td>
+</tr>
+<tr>
+<td><code>time_stamps</code></td>
+<td>bool</td>
+<td><code>True</code></td>
+<td>Return timestamps (<code>True</code>) or boolean mask (<code>False</code>)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="fractional-differentiation-fracdifffrac_diff_ffd">Fractional Differentiation (<code>fracdiff.frac_diff_ffd</code>)<a class="headerlink" href="#fractional-differentiation-fracdifffrac_diff_ffd" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>series</code></td>
+<td>DataFrame</td>
+<td><em>(required)</em></td>
+<td>Input price series</td>
+</tr>
+<tr>
+<td><code>diff_amt</code></td>
+<td>float</td>
+<td><em>(required)</em></td>
+<td>Fractional differentiation order (0 &lt; d &lt; 1)</td>
+</tr>
+<tr>
+<td><code>thresh</code></td>
+<td>float</td>
+<td><code>1e-5</code></td>
+<td>Weight cutoff threshold for the FFD filter</td>
+</tr>
+</tbody>
+</table>
+<h3 id="combinatorial-purged-k-fold-cross_validationcombinatorialpurgedkfold">Combinatorial Purged K-Fold (<code>cross_validation.CombinatorialPurgedKFold</code>)<a class="headerlink" href="#combinatorial-purged-k-fold-cross_validationcombinatorialpurgedkfold" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>n_splits</code></td>
+<td>int</td>
+<td><em>(required)</em></td>
+<td>Total number of folds</td>
+</tr>
+<tr>
+<td><code>n_test_splits</code></td>
+<td>int</td>
+<td><em>(required)</em></td>
+<td>Number of folds used for testing in each combination</td>
+</tr>
+<tr>
+<td><code>samples_info_sets</code></td>
+<td>Series</td>
+<td><em>(required)</em></td>
+<td>Maps each sample to its information set end time (for purging)</td>
+</tr>
+<tr>
+<td><code>pct_embargo</code></td>
+<td>float</td>
+<td><code>0.0</code></td>
+<td>Percentage of data to embargo after each test set</td>
+</tr>
+</tbody>
+</table>
+<h3 id="daily-volatility-utilvolatilityget_daily_vol">Daily Volatility (<code>util.volatility.get_daily_vol</code>)<a class="headerlink" href="#daily-volatility-utilvolatilityget_daily_vol" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>close</code></td>
+<td>Series</td>
+<td><em>(required)</em></td>
+<td>Close price series</td>
+</tr>
+<tr>
+<td><code>lookback</code></td>
+<td>int</td>
+<td><code>100</code></td>
+<td>Lookback window for exponentially weighted std of returns</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sequential-bootstrap-samplingget_ind_matrix-samplingget_ind_mat_label_uniqueness">Sequential Bootstrap (<code>sampling.get_ind_matrix</code> / <code>sampling.get_ind_mat_label_uniqueness</code>)<a class="headerlink" href="#sequential-bootstrap-samplingget_ind_matrix-samplingget_ind_mat_label_uniqueness" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>samples_info_sets</code></td>
+<td>Series</td>
+<td><em>(required)</em></td>
+<td>Information set end times per sample</td>
+</tr>
+<tr>
+<td><code>price_bars</code></td>
+<td>DataFrame</td>
+<td><em>(required)</em></td>
+<td>Price bar DataFrame with DatetimeIndex</td>
+</tr>
+</tbody>
+</table>
+<h3 id="multiprocessing-helper-utilmultiprocessmp_pandas_obj">Multiprocessing Helper (<code>util.multiprocess.mp_pandas_obj</code>)<a class="headerlink" href="#multiprocessing-helper-utilmultiprocessmp_pandas_obj" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>func</code></td>
+<td>callable</td>
+<td><em>(required)</em></td>
+<td>Function to parallelize</td>
+</tr>
+<tr>
+<td><code>pd_obj</code></td>
+<td>tuple</td>
+<td><em>(required)</em></td>
+<td><code>('molecule', index)</code> tuple defining the parallelization axis</td>
+</tr>
+<tr>
+<td><code>num_threads</code></td>
+<td>int</td>
+<td><code>1</code></td>
+<td>Number of parallel threads (1 = sequential)</td>
+</tr>
+<tr>
+<td><code>mp_batches</code></td>
+<td>int</td>
+<td><code>1</code></td>
+<td>Number of batches per thread for load balancing</td>
+</tr>
+<tr>
+<td><code>lin_parts</code></td>
+<td>bool</td>
+<td><code>True</code></td>
+<td>Use linear partitioning (<code>True</code>) or nested partitioning (<code>False</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
+<h3 id="1-valueerror-expected-columns-date_time-price-volume-in-bar-generation">1. <code>ValueError: Expected columns [date_time, price, volume]</code> in bar generation<a class="headerlink" href="#1-valueerror-expected-columns-date_time-price-volume-in-bar-generation" title="Permanent link">&para;</a></h3>
+<p><strong>Cause</strong>: Input DataFrame columns do not match the expected format.
+<strong>Solution</strong>: Ensure your tick data has exactly three columns named <code>date_time</code>, <code>price</code>, and <code>volume</code>. The <code>date_time</code> column must be parseable as datetime.</p>
+<h3 id="2-memoryerror-when-generating-bars-from-large-datasets">2. <code>MemoryError</code> when generating bars from large datasets<a class="headerlink" href="#2-memoryerror-when-generating-bars-from-large-datasets" title="Permanent link">&para;</a></h3>
+<p><strong>Cause</strong>: The entire dataset is loaded into memory at once.
+<strong>Solution</strong>: Reduce <code>batch_size</code> parameter (e.g., <code>batch_size=1_000_000</code>). Use <code>to_csv=True</code> with <code>output_path</code> to stream results to disk. Pass a file path instead of a DataFrame to enable batch processing.</p>
+<h3 id="3-get_events-returns-empty-dataframe">3. <code>get_events</code> returns empty DataFrame<a class="headerlink" href="#3-get_events-returns-empty-dataframe" title="Permanent link">&para;</a></h3>
+<p><strong>Cause</strong>: No events triggered -- either <code>t_events</code> is empty, <code>min_ret</code> is too high, or barriers are too narrow.
+<strong>Solution</strong>: Check that <code>t_events</code> contains timestamps. Lower <code>min_ret</code>, widen <code>pt_sl</code> multipliers, or increase the <code>threshold</code> in <code>cusum_filter</code> to get more event samples.</p>
+<h3 id="4-zerodivisionerror-in-get_daily_vol">4. <code>ZeroDivisionError</code> in <code>get_daily_vol</code><a class="headerlink" href="#4-zerodivisionerror-in-get_daily_vol" title="Permanent link">&para;</a></h3>
+<p><strong>Cause</strong>: Input series has too few data points or all identical prices (zero returns).
+<strong>Solution</strong>: Ensure at least <code>lookback + 1</code> data points. Verify prices are not constant.</p>
+<h3 id="5-numba-jit-compilation-fails-numbacoreerrorstypingerror">5. Numba JIT compilation fails (<code>numba.core.errors.TypingError</code>)<a class="headerlink" href="#5-numba-jit-compilation-fails-numbacoreerrorstypingerror" title="Permanent link">&para;</a></h3>
+<p><strong>Cause</strong>: Numba cannot compile the fast EWMA function, often due to incompatible Numba/NumPy versions.
+<strong>Solution</strong>: Upgrade Numba and NumPy to compatible versions (<code>pip install numba numpy --upgrade</code>). The <code>fast_ewma</code> module requires Numba JIT support.</p>
+<h3 id="6-mp_pandas_obj-hangs-or-produces-no-output">6. <code>mp_pandas_obj</code> hangs or produces no output<a class="headerlink" href="#6-mp_pandas_obj-hangs-or-produces-no-output" title="Permanent link">&para;</a></h3>
+<p><strong>Cause</strong>: Deadlock in multiprocessing, often on macOS or in Jupyter notebooks.
+<strong>Solution</strong>: Set <code>num_threads=1</code> to disable multiprocessing. On macOS, set <code>export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES</code> before running.</p>
+<h3 id="7-triple-barrier-labels-are-all-zeros">7. Triple Barrier labels are all zeros<a class="headerlink" href="#7-triple-barrier-labels-are-all-zeros" title="Permanent link">&para;</a></h3>
+<p><strong>Cause</strong>: The <code>target</code> (volatility) series values are much larger than actual price moves, making barriers unreachable.
+<strong>Solution</strong>: Check the scale of <code>target</code> values relative to price changes. Use <code>get_daily_vol()</code> with an appropriate <code>lookback</code> to compute properly scaled volatility.</p>
+<h3 id="8-keyerror-or-indexerror-in-cross-validation">8. <code>KeyError</code> or <code>IndexError</code> in cross-validation<a class="headerlink" href="#8-keyerror-or-indexerror-in-cross-validation" title="Permanent link">&para;</a></h3>
+<p><strong>Cause</strong>: <code>samples_info_sets</code> index does not align with the training data index.
+<strong>Solution</strong>: Ensure <code>samples_info_sets</code> has the same DatetimeIndex as your feature matrix. All indices must be present in both.</p>
+<h2 id="security-considerations">Security Considerations<a class="headerlink" href="#security-considerations" title="Permanent link">&para;</a></h2>
+<h3 id="api-key-management">API Key Management<a class="headerlink" href="#api-key-management" title="Permanent link">&para;</a></h3>
+<ul>
+<li>MLFinLab is a research library and does not directly connect to exchanges or APIs. However, data pipelines feeding into MLFinLab may use API keys.</li>
+<li>Keep API keys for data providers (e.g., for fetching tick data from exchanges) in environment variables, not in notebooks or scripts.</li>
+</ul>
+<h3 id="credential-storage">Credential Storage<a class="headerlink" href="#credential-storage" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Sample datasets are bundled in <code>mlfinlab/datasets/data/</code>. These contain no sensitive data.</li>
+<li>If loading proprietary datasets from databases or cloud storage, use environment-based credential injection rather than hardcoded connection strings.</li>
+</ul>
+<h3 id="network-security">Network Security<a class="headerlink" href="#network-security" title="Permanent link">&para;</a></h3>
+<ul>
+<li>MLFinLab performs all computation locally; it makes no outbound network calls.</li>
+<li>When using <code>mp_pandas_obj</code> for multiprocessing, all processes run locally on the same machine. No data leaves the host.</li>
+</ul>
+<h3 id="safe-practices">Safe Practices<a class="headerlink" href="#safe-practices" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Validate input data before passing to labeling functions. Malformed tick data (negative prices, NaN volumes) can produce misleading labels.</li>
+<li>When writing bar data to CSV with <code>to_csv=True</code>, ensure the output directory has appropriate permissions to prevent unauthorized access to trading data.</li>
+<li>Use <code>verbose=False</code> in production pipelines to avoid leaking data details to log files.</li>
+<li>Pin dependency versions (NumPy, Numba, pandas) to avoid breaking changes in JIT-compiled functions.</li>
+<li>Be cautious with <code>num_threads</code> in shared computing environments; excessive parallelism can affect other users.</li>
+</ul>
+<hr />
+<h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="README.md">README</a> — Project overview and quick start</li>
+<li><a href="architecture.md">Architecture</a> — System design and components</li>
+<li><a href="workflow.md">Workflow</a> — Event flows and processing pipelines</li>
+<li><a href="state-management.md">State Management</a> — State lifecycle and data models</li>
+</ul></main>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@12.1.0/dist/mermaid.esm.min.mjs';
+mermaid.initialize({startOnLoad:true,securityLevel:'strict',theme:'default',flowchart:{useMaxWidth:true},sequence:{useMaxWidth:true}});
+</script></body></html>
