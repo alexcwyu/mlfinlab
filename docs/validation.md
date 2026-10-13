@@ -1,5 +1,11 @@
 # Validation evidence: mlfinlab
 
+<!-- current-documentation-provenance -->
+Documentation reviewed: 2026-10-13 · Git source base: `c6bda44c397938a498dff307c4589400bf734c84` · [Current architecture and feature guide](ayu-develop.md).
+Historical execution commands/results below retain their original dates and scope; this metadata update is not a new application test run.
+<!-- /current-documentation-provenance -->
+
+
 Run date: 2026-10-12. Branch: `feature/ayu_develop`. Interpreter: `3.13.16 (main, Oct  9 2026, 15:11:24) [Clang 22.1.3 ]`.
 
 | Check | Result |
